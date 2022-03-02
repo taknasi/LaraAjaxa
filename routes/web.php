@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'UserController@index');
 
 Route::delete('users/delete','UserController@destroy')->name('users.destroye');
 Route::put('users/update','UserController@update')->name('users.updatee');

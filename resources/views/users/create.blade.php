@@ -45,7 +45,7 @@
                         <div class="card-body pt-5">
                             <!--begin::Form-->
                             <form id="kt_ecommerce_settings_general_form" class="form">
-
+                                @csrf
                                 <!--begin::Input group-->
                                 <div class="mb-7">
                                     <!--begin::Label-->
@@ -110,9 +110,9 @@
                                     <!--begin::Input-->
                                     <input type="text" class="form-control form-control-solid" name="name" value="" />
 
-                                    
+
                                     <div id="name_error" class="fv-plugins-message-container invalid-feedback"></div>
-                                    
+
                                     <!--end::Input-->
                                 </div>
                                 <!--end::Input group-->
@@ -715,30 +715,35 @@
         $(document).on('click', '#save', function(e) {
             e.preventDefault();
 
+            var formData = new FormData($('#kt_ecommerce_settings_general_form')[0]);
+
             $.ajax({
                 type: 'post',
                 url: "{{ route('users.store') }}",
-                data: {
-                    '_token': "{{ csrf_token() }}",
-                    'name': $("input[name='name']").val(),
-                    'email': $("input[name='email']").val(),
-                    'phone': $("input[name='phone']").val(),
-                    'city': $("input[name='city']").val(),
-                    'country': $("select[name='country']").val(),
-                    'notes': $("textarea[name='notes']").val(),
-                },
+                // data: {
+                //     '_token': "{{ csrf_token() }}",
+                //     'name': $("input[name='name']").val(),
+                //     'email': $("input[name='email']").val(),
+                //     'phone': $("input[name='phone']").val(),
+                //     'city': $("input[name='city']").val(),
+                //     'country': $("select[name='country']").val(),
+                //     'notes': $("textarea[name='notes']").val(),
+                // },
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+                enctype:"multipart/form-data",
                 success: function(data) {
                     if (data.status == true) {
                         $('#myalert').show();
                     }
                 },
                 error: function(reject) {
-                    var respose=$.parseJSON(reject.responseText);
-                    $.each(respose.errors,function(key,val)
-                    {
-                        $("#"+key+"_error").text(val[0]);
-                    }
-                    );
+                    var respose = $.parseJSON(reject.responseText);
+                    $.each(respose.errors, function(key, val) {
+                        $("#" + key + "_error").text(val[0]);
+                    });
                 }
             })
         });

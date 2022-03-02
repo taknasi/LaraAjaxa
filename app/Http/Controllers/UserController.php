@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Traits\PhotoTrait;
 use App\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    use PhotoTrait;
+
     public function index()
     {
         $users = User::orderBy('id', 'DESC')->get();
@@ -23,6 +26,10 @@ class UserController extends Controller
 
     public function store(UserRequest $request)
     {
+        $filePath = null;
+        if ($request->hasFile('avatar')) {
+            $filePath = $this->uploadP('users', $request->avatar);
+        }
         User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -30,9 +37,13 @@ class UserController extends Controller
             'city' => $request->city,
             'country' => $request->country,
             'notes' => $request->notes,
+            'photo' => $filePath
         ]);
         // return redirect()->back()->with(['success'=>'Enregistrement avec succès']);
         return response()->json(['status' => true]);
+    }
+    public function lol()
+    {
     }
 
     public function edit($id)
